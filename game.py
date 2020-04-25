@@ -17,6 +17,7 @@ class Game:
         self.red = (255, 0, 0)
         self.green = (0, 255, 0)
         self.blue = (0, 0, 255)
+        self.fall_speed = 1
         self.score = 0
         self.falling_words = []
         self.right = []
@@ -45,8 +46,22 @@ class Game:
             self.screen.blit(
                 game_score, (self.screen_w - 95, self.screen_h - 140))
 
+    def speedup(self, start_timer):
+        current_time = pygame.time.get_ticks()
+        seconds_passed = current_time - start_timer
+
+        if seconds_passed >= 15000:
+            self.fall_speed = 2
+        elif seconds_passed >= 30000:
+            self.fall_speed = 3
+        elif seconds_passed >= 90000:
+            self.fall_speed = 4
+        elif seconds_passed >= 150000:
+            self.fall_speed = 5
+
     def run(self):
         clock = pygame.time.Clock()
+        start_timer = pygame.time.get_ticks()
         textbox = pygame_textinput.TextInput(antialias=True,
                                              text_color=self.white, cursor_color=self.white)
         textinput = ""
@@ -72,6 +87,7 @@ class Game:
 
             self.gen_words()
             self.draw()
+            self.speedup(start_timer)
 
             # Draw textbox if there's no correct typed words or no text inputed
             if not textinput or self.right is not None:
@@ -79,9 +95,10 @@ class Game:
                                  (25, self.screen_h - 145))
 
             for w in self.falling_words:
-                w.y += 3
+                w.y += self.fall_speed
                 if w.hit_bottom():
                     print(w.word)
+                    break
 
             pygame.display.flip()  # Outputs to display
             clock.tick(60)  # Game tick 60 FPS
