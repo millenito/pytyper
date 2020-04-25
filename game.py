@@ -40,7 +40,7 @@ class Game:
         pygame.draw.rect(self.screen, self.blue, (10, self.screen_h - 160,
                                                   self.screen_w - 20, self.screen_h - 300), 0)
 
-        game_score = self.game_font.render(f"{self.score}", True, self.white)
+        game_score = self.game_font.render(str(self.score), True, self.white)
         if self.score > 0:
             self.screen.blit(
                 game_score, (self.screen_w - 95, self.screen_h - 140))
